@@ -141,6 +141,16 @@ Device (PCI0)
                 Return (STA_VISIBLE)
             }
 
+            Method (_CRS, 0, Serialized)
+            {
+                Name (RBUF, ResourceTemplate()
+                {
+                    GpioInt(Level, ActiveHigh, Exclusive, PullNone, 0,
+                        "\\_SB.PCI0.GPIO", 0, ResourceConsumer, , ) { 64 }
+                })
+                Return (RBUF)
+            }
+
             Method (_RMV, 0, NotSerialized)
             {
                 Return (Zero)
@@ -537,6 +547,20 @@ Device (PCI0)
         {
             Return (RBUF)
         }
+
+        /*
+         * See Documentation/devicetree/bindings/dma/snps-dma.txt
+         * for more information about these bindings.
+         */
+        Name (_DSD, Package () {
+            ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+            Package () {
+                Package () { "dma-channels", 8 },
+                Package () { "dma-masters", 1 },
+                Package () { "snps,block-size", 131071 },
+                Package () { "snps,data-width", Package () { 4 } },
+            }
+        })
     }
 }
 
